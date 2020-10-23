@@ -1,6 +1,9 @@
 'use strict';
 
 const containerMovies = document.querySelector('.js__containerMovies');
+const containerFavoriteSerie = document.querySelector(
+  '.js__favoriteSeriesList'
+);
 const btnSearch = document.querySelector('.js__btnSearch');
 const inputMovies = document.querySelector('.js__inputMovie');
 let movies = [];
@@ -37,7 +40,16 @@ function renderMovies() {
     renderHtml += `<li class = "${classFavoriteBackColor} js__movieItem" id = "${[
       movies[i].show.id,
     ]}">`;
-    renderHtml += `<img src="${movies[i].show.image.medium}" alt="poster image" title="poster image" />`;
+    renderHtml += `<img src="${
+      movies[i].show.image?.medium ||
+      'https://via.placeholder.com/210x295/ffffff/666666/?text=TV'
+    }" alt="poster image" title="poster image" />`;
+
+    // renderHtml += `<img src="${
+    //   (movies[i].show.image && movies[i].show.image.medium) ||
+    //   'https://via.placeholder.com/210x295/ffffff/666666/?text=TV'
+    // }" alt="poster image" title="poster image" />`;
+
     renderHtml += `<h2 ">${movies[i].show.name}</h2>`;
     renderHtml += `</li>`;
   }
