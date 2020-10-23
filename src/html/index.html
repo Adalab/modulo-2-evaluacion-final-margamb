@@ -3,7 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Adalab Web Starter Kit</title>
+    <title>Buscador de series</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/fork-awesome@1.1.7/css/fork-awesome.min.css"
@@ -19,28 +24,36 @@
   </head>
 
   <body>
+    <header class="header">
+      <h1 class="header__title">Buscador de series</h1>
+    </header>
     <div class="page">
-      <!-- <include src="./partials/footer.html"></include> -->
       <main class="main">
         <section class="sectionOne">
-          <form action="">
-            <input class="js__inputMovie" type="text" />
+          <form action="" method="GET">
+            <input
+              class="sectionOne__input js__inputMovie"
+              type="text"
+              name="shows"
+              placeholder="Search shows..."
+            />
             <input class="js__btnSearch" type="button" value="Search" />
           </form>
-          <h2>Mis series favoritas</h2>
-          <ul class="js__favoriteSeriesList"></ul>
+          <h2 class="sectionOne__FavShows">Mis series favoritas</h2>
+          <ul class="sectionOne__FavList js__favoriteSeriesList"></ul>
         </section>
 
         <section class="sectionTwo js__containerMovies">
-          <ul>
-            <!-- <li>
+          <!--<ul class="sectionTwo__ul">
+             <li>
               <img src="" alt="" />
               <h2></h2>
-            </li> -->
-          </ul>
+            </li> 
+          </ul>-->
         </section>
       </main>
     </div>
+    <!-- <include src="./partials/footer.html"></include> -->
     <script src="./assets/js/main.js"></script>
   </body>
 </html>
