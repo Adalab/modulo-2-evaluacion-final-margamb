@@ -13,6 +13,25 @@
   font-size: 12px;
 }
 
+.main {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+}
+
+.sectionOne {
+  width: 60%;
+}
+
+.sectionTwo {
+  width: 30%;
+}
+
+.sectionTwo__img {
+  width: 80%;
+}
+
 // .movieFavoriteTextColor {
 //   color: blue;
 // }

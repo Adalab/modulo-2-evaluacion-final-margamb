@@ -9,28 +9,28 @@ const inputMovies = document.querySelector('.js__inputMovie');
 let movies = [];
 let favoritesMovies = [];
 
+//function get data
 function getData(movie) {
   fetch(`http://api.tvmaze.com/search/shows?q=${movie}`)
     .then((response) => response.json())
-    // .then(console.log)
     .then((data) => {
       movies = data;
       renderMovies();
-      clickFavoriteMovies();
+      addFavEventListener();
     });
 }
 
+//function render show and add class of favorite show
 function renderMovies() {
   let renderHtml = '';
   renderHtml += `<ul>`;
-  console.log(movies);
 
   for (let i = 0; i < movies.length; i++) {
     let classFavoriteBackColor;
-    console.log('favoritesMovies', favoritesMovies);
-    const favoriteIndex = favoritesMovies.indexOf(movies[i].show.id);
-    console.log('favoriteIndex', favoriteIndex);
-    const isFavoriteMov = favoriteIndex !== -1;
+    const favoriteIndex = favoritesMovies.filter(
+      (favMovie) => favMovie.show.id === movies[i].show.id
+    );
+    const isFavoriteMov = favoriteIndex.length > 0;
     if (isFavoriteMov === true) {
       classFavoriteBackColor = 'movieFavoriteBckColor';
     } else {
@@ -40,7 +40,7 @@ function renderMovies() {
     renderHtml += `<li class = "${classFavoriteBackColor} js__movieItem" id = "${[
       movies[i].show.id,
     ]}">`;
-    renderHtml += `<img src="${
+    renderHtml += `<img class="sectionTwo__img" src="${
       movies[i].show.image?.medium ||
       'https://via.placeholder.com/210x295/ffffff/666666/?text=TV'
     }" alt="poster image" title="poster image" />`;
@@ -54,10 +54,10 @@ function renderMovies() {
     renderHtml += `</li>`;
   }
   renderHtml += `</ul>`;
-  console.log(renderHtml);
   containerMovies.innerHTML = renderHtml;
 }
 
+//function input to search show
 function getSearchMovies() {
   const inputNameMovie = inputMovies.value;
   getData(inputNameMovie);
@@ -65,30 +65,91 @@ function getSearchMovies() {
 
 btnSearch.addEventListener('click', getSearchMovies);
 
-function favoriteListMovies(ev) {
-  const clicked = parseInt(ev.currentTarget.id);
-  console.log(clicked);
-  const indexFav = favoritesMovies.indexOf(clicked);
-  const isFavorite = indexFav !== -1;
-  if (isFavorite === false) {
-    console.log('lo meto');
-    favoritesMovies.push(clicked);
-  } else {
+function handleFavClick(ev) {
+  const clicked = parseInt(ev.currentTarget.id); //id solo numero
+  console.log(`El usuario ha clickado en un objeto con la id ${clicked}`);
+  //la funciion de favmovie coge el objeto cn la id q han clickado
+  const favMovie = movies.filter((movie) => movie.show.id === clicked)[0];
+  //   console.log(`Esta es la lista de foundMovies ${JSON.stringify(movies)}`);
+  console.log(
+    `Con la ID ${clicked} hemos encontrado este show en la lista de movies`,
+    favMovie
+  );
+
+  //   for (let i = 0; i < favoritesMovies.length; i++) {
+  const isShowAlreadyFaved =
+    favoritesMovies.filter((show) => show.show.id === clicked).length > 0;
+  console.log(
+    `Hemos buscado la peli en las favoritas y nos ha dado ${isShowAlreadyFaved}`
+  );
+  if (isShowAlreadyFaved) {
     console.log('lo quito');
-    favoritesMovies.splice(indexFav, 1);
+    // let fa = isFavorite;
+  } else {
+    console.log('lo meto');
+    favoritesMovies.push(favMovie); //el objeto entero subimos a favoritos
+    // console.log(
+    //   `Ahora en favmovies tenemos ${JSON.stringify(favoritesMovies)}`
+    // );
   }
+
+  //     const isFavShow = indexFavShow === true;
+  //     favoritesMovies.splice(isFavShow, 1);
+  //   }
+
+  //
+
+  //isFavShow -> las series que estan el favoritos Como las quito?
+  //   console.log(isFavShow);
+  //   const isFavorite = favMovie !== -1;
+  //   if (isFavorite === false) {
+  //     favoritesMovies.push(favMovie);
+  //   } else {
+  //     favoritesMovies.splice(, 1);
+  //   }
+
+  //   if (isFavShow === false) {
+  //     console.log('lo meto');
+  //     favoritesMovies.push(favMovie);
+  //   } else {
+  //     console.log('lo quito');
+  //     favoritesMovies.splice(indexFavShow, 1);
+  //   }
   renderMovies();
-  clickFavoriteMovies();
+  addFavEventListener();
+  renderFavorites();
 }
 
-function clickFavoriteMovies() {
-  console.log('clickFavoriteMovies');
+function addFavEventListener() {
+  console.log('Add event listener');
   const movieItems = document.querySelectorAll('.js__movieItem');
   for (const movieItem of movieItems) {
-    movieItem.addEventListener('click', favoriteListMovies);
+    movieItem.addEventListener('click', handleFavClick);
   }
 }
 
-//hacer lo de si no tiene foto no va
+function renderFavorites() {
+  let renderFavHtml = '';
 
-//el boton search q vaya con reset
+  for (let i = 0; i < favoritesMovies.length; i++) {
+    renderFavHtml += `<li class="js__movieItem" id = "${[movies[i].show.id]}">`;
+    renderFavHtml += `<img src="${
+      favoritesMovies[i].show.image?.medium ||
+      'https://via.placeholder.com/210x295/ffffff/666666/?text=TV'
+    }" alt="poster image" title="poster image" />`;
+    renderFavHtml += `<h2>${favoritesMovies[i].show.name}</h2>`;
+    renderFavHtml += `</li>`;
+    renderFavHtml += `<i class="fa fa-times" aria-hidden="true"></i>`;
+  }
+  containerFavoriteSerie.innerHTML = renderFavHtml;
+  addFavEventListener();
+}
+
+renderFavorites();
+
+// function deleteFanMovie(ev) {
+//   for (let i = 0; i < favoritesMovies.length; i++) {
+//     console.log('Current target:', ev.currentTarget);
+//     console.log('Target:', ev.target);
+//   }
+// }
