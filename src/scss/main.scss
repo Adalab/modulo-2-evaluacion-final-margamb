@@ -23,7 +23,7 @@
   margin-bottom: 10px;
   box-sizing: border-box;
 }
-.movieFavoriteBckColor {
+.showFavoriteBckColor {
   background-color: #fd7edd;
   color: white;
   font-size: 12px;
@@ -84,10 +84,12 @@
 
 .sectionTwo__img {
   width: 80%;
+  border-radius: 10px;
 }
 
 .sectionOne__img {
   width: 20%;
+  border-radius: 10px;
 }
 
 // .movieFavoriteTextColor {

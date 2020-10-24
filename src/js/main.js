@@ -1,112 +1,99 @@
 'use strict';
 
-const containerMovies = document.querySelector('.js__containerMovies');
-const containerFavoriteSerie = document.querySelector(
-  '.js__favoriteSeriesList'
-);
+const containerShows = document.querySelector('.js__containerShows');
+const containerFavoriteShows = document.querySelector('.js__favoriteShowsList');
 const btnSearch = document.querySelector('.js__btnSearch');
-const inputMovies = document.querySelector('.js__inputMovie');
-let movies = [];
-let favoritesMovies = [];
+const inputShows = document.querySelector('.js__inputShows');
+let shows = [];
+//si hay algo en localStore cogelo, sino es una array vacia
+let favs = JSON.parse(localStorage.getItem('favs')) || [];
 
 //function get data
-function getData(movie) {
-  fetch(`http://api.tvmaze.com/search/shows?q=${movie}`)
+function getData(show) {
+  fetch(`http://api.tvmaze.com/search/shows?q=${show}`)
     .then((response) => response.json())
     .then((data) => {
-      movies = data;
-      renderMovies();
+      shows = data;
+      renderShows();
       addFavEventListener();
     });
 }
 
+//function input to search show
+function getSearchShows() {
+  const inputNameShow = inputShows.value;
+  getData(inputNameShow);
+}
+btnSearch.addEventListener('click', getSearchShows);
+
 //function render show and add class of favorite show
-function renderMovies() {
+function renderShows() {
   let renderHtml = '';
   renderHtml += `<ul class="sectionTwo__ul">`;
 
-  for (let i = 0; i < movies.length; i++) {
+  for (let i = 0; i < shows.length; i++) {
     let classFavoriteBackColor;
-    const favoriteIndex = favoritesMovies.filter(
-      (favMovie) => favMovie.show.id === movies[i].show.id
+    const favoriteIndex = favs.filter(
+      (favShow) => favShow.show.id === shows[i].show.id
     );
-    const isFavoriteMov = favoriteIndex.length > 0;
-    if (isFavoriteMov === true) {
-      classFavoriteBackColor = 'movieFavoriteBckColor';
+    const isFavoriteShow = favoriteIndex.length > 0;
+    if (isFavoriteShow === true) {
+      classFavoriteBackColor = 'showFavoriteBckColor';
     } else {
       classFavoriteBackColor = '';
     }
 
-    renderHtml += `<li class = "${classFavoriteBackColor} sectionTwo__li js__movieItem" id = "${[
-      movies[i].show.id,
+    renderHtml += `<li class = "${classFavoriteBackColor} sectionTwo__li js__showItem" id = "${[
+      shows[i].show.id,
     ]}">`;
     renderHtml += `<img class="sectionTwo__img" src="${
-      movies[i].show.image?.medium ||
+      shows[i].show.image?.medium ||
       'https://via.placeholder.com/210x295/ffffff/666666/?text=TV'
     }" alt="poster image" title="poster image" />`;
-
     // renderHtml += `<img src="${
-    //   (movies[i].show.image && movies[i].show.image.medium) ||
+    //   (shows[i].show.image && shows[i].show.image.medium) ||
     //   'https://via.placeholder.com/210x295/ffffff/666666/?text=TV'
     // }" alt="poster image" title="poster image" />`;
 
-    renderHtml += `<h2 ">${movies[i].show.name}</h2>`;
+    renderHtml += `<h2 ">${shows[i].show.name}</h2>`;
     renderHtml += `</li>`;
   }
   renderHtml += `</ul>`;
-  containerMovies.innerHTML = renderHtml;
+  containerShows.innerHTML = renderHtml;
 }
 
-//function input to search show
-function getSearchMovies() {
-  const inputNameMovie = inputMovies.value;
-  getData(inputNameMovie);
-}
-btnSearch.addEventListener('click', getSearchMovies);
-
+//funcion manejadora.
 function handleFavClick(ev) {
   const clicked = parseInt(ev.currentTarget.id); //id -> solo numero
-  console.log(`El usuario ha clickado en un objeto con la id ${clicked}`);
-  //la funciion de fanMovie coge el objeto cn la id q han clickado
-  const favMovie = movies.filter((movie) => movie.show.id === clicked)[0];
-  //   console.log(`Esta es la lista de foundMovies ${JSON.stringify(movies)}`);
-  console.log(
-    `Con la ID ${clicked} hemos encontrado este show en la lista de movies`,
-    favMovie
-  );
 
-  //filter nos da un array  de las clicladas length es mayor de 0 si fuera menos uno no estarian clicadas.
-  //Vemos
+  //la funciion de fanshow coge el objeto cn la id q han clickado
+  //filter me devuelve una array de show(s) clickad(as) -> [0]cogemos el objeto.
+  const favShow = shows.filter((show) => show.show.id === clicked)[0];
+
+  // filter busca en favs si el id esta clickado
   const isShowAlreadyFaved =
-    favoritesMovies.filter((show) => show.show.id === clicked).length > 0;
+    favs.filter((show) => show.show.id === clicked).length > 0;
 
-  console.log(
-    `Hemos buscado la peli en las favoritas y nos ha dado ${isShowAlreadyFaved}`
-  );
-  if (isShowAlreadyFaved) {
-    favoritesMovies = favoritesMovies.filter(
-      (show) => show.show.id !== clicked
-    );
+  if (isShowAlreadyFaved === true) {
+    //lo desclico
+    favs = favs.filter((show) => show.show.id !== clicked);
     console.log('lo quito');
   } else {
     console.log('lo meto');
-    favoritesMovies.push(favMovie); //el objeto entero subimos a favoritos
-    // console.log(
-    //   `Ahora en favmovies tenemos ${JSON.stringify(favoritesMovies)}`
-    // );
+    favs.push(favShow); //el objeto entero subimos a favoritos
   }
 
   setLocalStorage();
-  renderMovies();
+  renderShows();
   addFavEventListener();
   renderFavorites();
 }
 
 function addFavEventListener() {
   console.log('Add event listener');
-  const movieItems = document.querySelectorAll('.js__movieItem');
-  for (const movieItem of movieItems) {
-    movieItem.addEventListener('click', handleFavClick);
+  const showItems = document.querySelectorAll('.js__showItem');
+  for (const showItem of showItems) {
+    showItem.addEventListener('click', handleFavClick);
   }
 }
 
@@ -114,36 +101,33 @@ function addFavEventListener() {
 function renderFavorites() {
   let renderFavHtml = '';
 
-  for (let i = 0; i < favoritesMovies.length; i++) {
-    renderFavHtml += `<li class="sectionOne__list js__movieItem" id = "${[
-      favoritesMovies[i].show.id,
-    ]}">`;
+  for (let i = 0; i < favs.length; i++) {
+    renderFavHtml += `<li class="sectionOne__list js__showItem" id = "${favs[i].show.id}">`;
     renderFavHtml += `<img class="sectionOne__img" src="${
-      favoritesMovies[i].show.image?.medium ||
+      favs[i].show.image?.medium ||
       'https://via.placeholder.com/210x295/ffffff/666666/?text=TV'
     }" alt="poster image" title="poster image" />`;
-    renderFavHtml += `<h2>${favoritesMovies[i].show.name}</h2>`;
+    renderFavHtml += `<h2>${favs[i].show.name}</h2>`;
     renderFavHtml += `<i class="fa fa-times" aria-hidden="true"></i>`;
     renderFavHtml += `</li>`;
   }
-  containerFavoriteSerie.innerHTML = renderFavHtml;
-
+  containerFavoriteShows.innerHTML = renderFavHtml;
   addFavEventListener();
 }
 
 /// local Storage ///
-favoritesMovies = JSON.parse(localStorage.getItem('favoritesMovies'));
+// favs = JSON.parse(localStorage.getItem('favs')) || [];
 
 // -> renderizamos mas tarde para que nos aparezcan los favoritos
 renderFavorites();
 
 function setLocalStorage() {
-  localStorage.setItem('favoritesMovies', JSON.stringify(favoritesMovies));
+  localStorage.setItem('favs', JSON.stringify(favs));
 }
 setLocalStorage();
 
 // const btnDeleteList = document.querySelector('.js__btnDeleteList');
 // function deleteList() {
-//   favoritesMovies = '';
+//   favs = '';
 // }
 // btnDeleteList.addEventListener('click', deleteList);
