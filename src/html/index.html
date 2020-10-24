@@ -24,29 +24,11 @@
   </head>
 
   <body>
-    <header class="header">
-      <h1 class="header__title">Buscador de series</h1>
-    </header>
     <div class="page">
-      <main class="main">
-        <section class="sectionOne">
-          <form method="GET">
-            <input
-              class="sectionOne__input js__inputShows"
-              type="text"
-              name="shows"
-              placeholder="Search shows..."
-            />
-            <input class="js__btnSearch" type="button" value="Search" />
-          </form>
-          <h2 class="sectionOne__FavShows">Mis series favoritas</h2>
-          <ul class="sectionOne__FavList js__favoriteShowsList"></ul>
-        </section>
-
-        <section class="sectionTwo js__containerShows"></section>
-      </main>
+      <include src="./partials/header.html"></include>
+      <include src="./partials/main.html"></include>
     </div>
-    <!-- <include src="./partials/footer.html"></include> -->
+
     <script src="./assets/js/main.js"></script>
   </body>
 </html>

@@ -30,7 +30,6 @@ btnSearch.addEventListener('click', getSearchShows);
 function renderShows() {
   let renderHtml = '';
   renderHtml += `<ul class="sectionTwo__ul">`;
-
   for (let i = 0; i < shows.length; i++) {
     let classFavoriteBackColor;
     const favoriteIndex = favs.filter(
@@ -55,7 +54,7 @@ function renderShows() {
     //   'https://via.placeholder.com/210x295/ffffff/666666/?text=TV'
     // }" alt="poster image" title="poster image" />`;
 
-    renderHtml += `<h2 ">${shows[i].show.name}</h2>`;
+    renderHtml += `<h2 class="sectionTwo__titleShow">${shows[i].show.name}</h2>`;
     renderHtml += `</li>`;
   }
   renderHtml += `</ul>`;
@@ -70,7 +69,7 @@ function handleFavClick(ev) {
   //filter me devuelve una array de show(s) clickad(as) -> [0]cogemos el objeto.
   const favShow = shows.filter((show) => show.show.id === clicked)[0];
 
-  // filter busca en favs si el id esta clickado
+  // filter busca en favs si el id esta clickado(si es mayor q 0 esta clickado)
   const isShowAlreadyFaved =
     favs.filter((show) => show.show.id === clicked).length > 0;
 
@@ -90,7 +89,6 @@ function handleFavClick(ev) {
 }
 
 function addFavEventListener() {
-  console.log('Add event listener');
   const showItems = document.querySelectorAll('.js__showItem');
   for (const showItem of showItems) {
     showItem.addEventListener('click', handleFavClick);
@@ -107,7 +105,7 @@ function renderFavorites() {
       favs[i].show.image?.medium ||
       'https://via.placeholder.com/210x295/ffffff/666666/?text=TV'
     }" alt="poster image" title="poster image" />`;
-    renderFavHtml += `<h2>${favs[i].show.name}</h2>`;
+    renderFavHtml += `<h2 class="sectionOne__titleShow">${favs[i].show.name}</h2>`;
     renderFavHtml += `<i class="fa fa-times" aria-hidden="true"></i>`;
     renderFavHtml += `</li>`;
   }
@@ -119,15 +117,18 @@ function renderFavorites() {
 // favs = JSON.parse(localStorage.getItem('favs')) || [];
 
 // -> renderizamos mas tarde para que nos aparezcan los favoritos
+setLocalStorage();
 renderFavorites();
+
+const btnDeleteList = document.querySelector('.js__btnDeleteList');
+function deleteList() {
+  console.log('hi');
+  favs = [];
+  setLocalStorage();
+  renderFavorites();
+}
+btnDeleteList.addEventListener('click', deleteList);
 
 function setLocalStorage() {
   localStorage.setItem('favs', JSON.stringify(favs));
 }
-setLocalStorage();
-
-// const btnDeleteList = document.querySelector('.js__btnDeleteList');
-// function deleteList() {
-//   favs = '';
-// }
-// btnDeleteList.addEventListener('click', deleteList);
