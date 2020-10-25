@@ -26,10 +26,20 @@ function getSearchShows() {
 }
 btnSearch.addEventListener('click', getSearchShows);
 
+//Make the input work when hitting enter key.
+function enterKey(e) {
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    e.preventDefault();
+    btnSearch.click();
+  }
+}
+inputShows.addEventListener('keydown', enterKey);
+
 //function render show and add class of favorite show
 function renderShows() {
   let renderHtml = '';
   renderHtml += `<ul class="sectionTwo__ul">`;
+
   for (let i = 0; i < shows.length; i++) {
     let classFavoriteBackColor;
     const favoriteIndex = favs.filter(
@@ -49,37 +59,35 @@ function renderShows() {
       shows[i].show.image?.medium ||
       'https://via.placeholder.com/210x295/ffffff/666666/?text=TV'
     }" alt="poster image" title="poster image" />`;
-    // renderHtml += `<img src="${
-    //   (shows[i].show.image && shows[i].show.image.medium) ||
-    //   'https://via.placeholder.com/210x295/ffffff/666666/?text=TV'
-    // }" alt="poster image" title="poster image" />`;
 
     renderHtml += `<h2 class="sectionTwo__titleShow">${shows[i].show.name}</h2>`;
     renderHtml += `</li>`;
   }
+
   renderHtml += `</ul>`;
   containerShows.innerHTML = renderHtml;
 }
 
 //funcion manejadora.
 function handleFavClick(ev) {
-  const clicked = parseInt(ev.currentTarget.id); //id -> solo numero
+  const clickedId = parseInt(ev.currentTarget.id); //id -> solo numero
 
-  //la funciion de fanshow coge el objeto cn la id q han clickado
-  //filter me devuelve una array de show(s) clickad(as) -> [0]cogemos el objeto.
-  const favShow = shows.filter((show) => show.show.id === clicked)[0];
-
-  // filter busca en favs si el id esta clickado(si es mayor q 0 esta clickado)
+  // filter() crea un nuevo array con todos los elementos que cumplan la condición
+  // Busco en FAVORITOS si el objetos esta.
+  //> 0 esta
   const isShowAlreadyFaved =
-    favs.filter((show) => show.show.id === clicked).length > 0;
+    favs.filter((show) => show.show.id === clickedId).length > 0;
 
   if (isShowAlreadyFaved === true) {
-    //lo desclico
-    favs = favs.filter((show) => show.show.id !== clicked);
-    console.log('lo quito');
+    //Busco en favs si esta clickado y lo desclico(falso)
+    favs = favs.filter((show) => show.show.id !== clickedId);
+    console.log('quito el objeto');
   } else {
-    console.log('lo meto');
-    favs.push(favShow); //el objeto entero subimos a favoritos
+    console.log('meto el objeto');
+    //find() devuelve el valor del primer elemento del array que cumple es clikado
+    //Va a show lo clicka(hace true) lo sube a favoritos.
+    const clickedShow = shows.find((show) => show.show.id === clickedId);
+    favs.push(clickedShow); //el objeto entero subimos a favoritos
   }
 
   setLocalStorage();
@@ -100,29 +108,26 @@ function renderFavorites() {
   let renderFavHtml = '';
 
   for (let i = 0; i < favs.length; i++) {
-    renderFavHtml += `<li class="sectionOne__list js__showItem" id = "${favs[i].show.id}">`;
+    renderFavHtml += `<li class="sectionOne__list">`;
     renderFavHtml += `<img class="sectionOne__img" src="${
-      favs[i].show.image?.medium ||
+      (favs[i].show.image && favs[i].show.image.medium) ||
       'https://via.placeholder.com/210x295/ffffff/666666/?text=TV'
     }" alt="poster image" title="poster image" />`;
+
     renderFavHtml += `<h2 class="sectionOne__titleShow">${favs[i].show.name}</h2>`;
-    renderFavHtml += `<i class="fa fa-times" aria-hidden="true"></i>`;
+    renderFavHtml += `<i class="js__showItem fa fa-times" id = "${favs[i].show.id}" aria-hidden="true"></i>`;
     renderFavHtml += `</li>`;
   }
   containerFavoriteShows.innerHTML = renderFavHtml;
   addFavEventListener();
 }
 
-/// local Storage ///
-// favs = JSON.parse(localStorage.getItem('favs')) || [];
-
-// -> renderizamos mas tarde para que nos aparezcan los favoritos
+//renderizamos mas tarde para que nos aparezcan los favoritos
 setLocalStorage();
 renderFavorites();
 
 const btnDeleteList = document.querySelector('.js__btnDeleteList');
 function deleteList() {
-  console.log('hi');
   favs = [];
   setLocalStorage();
   renderFavorites();

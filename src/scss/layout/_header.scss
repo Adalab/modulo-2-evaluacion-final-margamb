@@ -1,5 +1,8 @@
-// .page__header {
-//   display: flex;
-//   justify-content: space-evenly;
-//   margin-bottom: 3rem;
-// }
+.header__title {
+  font-size: 30px;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: $color-header;
+  font-weight: 700;
+}
