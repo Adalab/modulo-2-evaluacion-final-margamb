@@ -8,7 +8,6 @@ let shows = [];
 //si hay algo en localStore cogelo, sino es una array vacia
 let favs = JSON.parse(localStorage.getItem('favs')) || [];
 
-//function get data
 function getData(show) {
   fetch(`http://api.tvmaze.com/search/shows?q=${show}`)
     .then((response) => response.json())
@@ -42,10 +41,14 @@ function renderShows() {
 
   for (let i = 0; i < shows.length; i++) {
     let classFavoriteBackColor;
+    //Me da una array con un show si este ya esta en favs, filtra en favs.
     const favoriteIndex = favs.filter(
       (favShow) => favShow.show.id === shows[i].show.id
     );
-    const isFavoriteShow = favoriteIndex.length > 0;
+
+    // Si en la busqueda anterior tengo al menos un resultado
+    // significa que el show esta incluido en favoritos
+    const isFavoriteShow = favoriteIndex.length > 0; //true
     if (isFavoriteShow === true) {
       classFavoriteBackColor = 'showFavoriteBckColor';
     } else {
@@ -68,7 +71,7 @@ function renderShows() {
   containerShows.innerHTML = renderHtml;
 }
 
-//funcion manejadora.
+//Handler function
 function handleFavClick(ev) {
   const clickedId = parseInt(ev.currentTarget.id); //id -> solo numero
 
@@ -79,15 +82,15 @@ function handleFavClick(ev) {
     favs.filter((show) => show.show.id === clickedId).length > 0;
 
   if (isShowAlreadyFaved === true) {
-    //Busco en favs si esta clickado y lo desclico(falso)
+    //Busco en favs si esta el show clickado y quito(falso)
     favs = favs.filter((show) => show.show.id !== clickedId);
     console.log('quito el objeto');
   } else {
     console.log('meto el objeto');
-    //find() devuelve el valor del primer elemento del array que cumple es clikado
-    //Va a show lo clicka(hace true) lo sube a favoritos.
+    //find() devuelve el valor del primer elemento del array cuya id es igual a la clikada
+    //Busca el show en shows y lo copia en favoritos.
     const clickedShow = shows.find((show) => show.show.id === clickedId);
-    favs.push(clickedShow); //el objeto entero subimos a favoritos
+    favs.push(clickedShow); //el objeto entero lo copiamos a favoritos
   }
 
   setLocalStorage();
@@ -103,7 +106,7 @@ function addFavEventListener() {
   }
 }
 
-// funcion para renderizar favoritos.
+// Function to render favorites
 function renderFavorites() {
   let renderFavHtml = '';
 
@@ -126,6 +129,7 @@ function renderFavorites() {
 setLocalStorage();
 renderFavorites();
 
+//Function to delete all the favourites
 const btnDeleteList = document.querySelector('.js__btnDeleteList');
 function deleteList() {
   favs = [];
@@ -134,6 +138,7 @@ function deleteList() {
 }
 btnDeleteList.addEventListener('click', deleteList);
 
+////Function localStorage
 function setLocalStorage() {
   localStorage.setItem('favs', JSON.stringify(favs));
 }
