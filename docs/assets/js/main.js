@@ -9,7 +9,7 @@ let shows = [];
 let favs = JSON.parse(localStorage.getItem('favs')) || [];
 
 function getData(show) {
-  fetch(`http://api.tvmaze.com/search/shows?q=${show}`)
+  fetch(`https://api.tvmaze.com/search/shows?q=${show}`)
     .then((response) => response.json())
     .then((data) => {
       shows = data;
