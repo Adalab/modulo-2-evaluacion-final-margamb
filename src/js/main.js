@@ -135,6 +135,7 @@ function deleteList() {
   favs = [];
   setLocalStorage();
   renderFavorites();
+  renderShows();
 }
 btnDeleteList.addEventListener('click', deleteList);
 
