@@ -34,6 +34,14 @@ function enterKey(e) {
 }
 inputShows.addEventListener('keydown', enterKey);
 
+const btnLog = document.querySelector('.js__log');
+function log() {
+  for (let i = 0; i < shows.length; i++) {
+    console.log(shows[i].show.name);
+  }
+}
+btnLog.addEventListener('click', log);
+
 //function render show and add class of favorite show
 function renderShows() {
   let renderHtml = '';
@@ -49,6 +57,7 @@ function renderShows() {
     // Si en la busqueda anterior tengo al menos un resultado
     // significa que el show esta incluido en favoritos
     const isFavoriteShow = favoriteIndex.length > 0; //true
+
     if (isFavoriteShow === true) {
       classFavoriteBackColor = 'showFavoriteBckColor';
     } else {
@@ -64,6 +73,7 @@ function renderShows() {
     }" alt="poster image" title="poster image" />`;
 
     renderHtml += `<h2 class="sectionTwo__titleShow">${shows[i].show.name}</h2>`;
+    renderHtml += `<p>${shows[i].show.schedule.time}</p>`;
     renderHtml += `</li>`;
   }
 
